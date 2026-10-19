@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About TrafficPulse — System Architecture & Methodology</title>
+    <meta name="description" content="Technical documentation and project details for TrafficPulse, a B.Tech 2nd-year CSE mini-project.">
+    
+    <!-- Redesigned Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- 1. Header & Navigation -->
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="brand-group">
+                <a href="{{ url_for('home') }}" class="brand-logo" aria-label="TrafficPulse Home">
+                    <span class="brand-icon" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="3" width="20" height="18" rx="3" fill="#0f1d33" />
+                            <line x1="12" y1="5" x2="12" y2="9" stroke="#84cc16" stroke-width="2" stroke-linecap="round" />
+                            <line x1="12" y1="12" x2="12" y2="15" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 1" />
+                            <line x1="12" y1="18" x2="12" y2="19" stroke="#84cc16" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="6" cy="12" r="1.5" fill="#ffffff" opacity="0.6" />
+                            <circle cx="18" cy="12" r="1.5" fill="#ffffff" opacity="0.6" />
+                        </svg>
+                    </span>
+                    <span class="brand-name">Traffic<span class="brand-accent">Pulse</span></span>
+                </a>
+                <span class="brand-badge">B.Tech Mini-Project</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="main-nav" aria-label="Primary Navigation">
+                <ul class="nav-list">
+                    <li><a href="{{ url_for('home') }}" class="nav-link">Home</a></li>
+                    <li><a href="{{ url_for('home') }}#corridors" class="nav-link">Corridors</a></li>
+                    <li><a href="{{ url_for('home') }}#predict" class="nav-link">Predict</a></li>
+                    <li><a href="{{ url_for('home') }}#guidelines" class="nav-link">Levels</a></li>
+                    <li><a href="{{ url_for('home') }}#analysis" class="nav-link">Analysis</a></li>
+                    <li><a href="{{ url_for('home') }}#pipeline" class="nav-link">Architecture</a></li>
+                    <li><a href="{{ url_for('about') }}" class="nav-link active">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 2. Page Hero Banner -->
+    <section class="hero-section" style="padding: 2.5rem 0 2rem;">
+        <div class="container hero-container" style="grid-template-columns: 1fr;">
+            <div class="hero-content" style="max-width: 900px;">
+                <div class="hero-tagline-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Project Documentation &amp; Technical Overview</span>
+                </div>
+                <h1 class="hero-title" style="font-size: 2.2rem; margin-bottom: 0.75rem;">
+                    About the TrafficPulse System
+                </h1>
+                <p class="hero-description" style="font-size: 1.05rem; line-height: 1.6;">
+                    <strong>TrafficPulse</strong> is an academic mini-project developed by a 2nd-year B.Tech 
+                    Computer Science &amp; Engineering student. It demonstrates how classical Machine Learning 
+                    (multinomial Logistic Regression) can model, analyze, and predict urban traffic congestion 
+                    states using standard transit variables.
+                </p>
+
+                <!-- Project Quick Stats -->
+                <div class="hero-stats-row" style="margin-top: 1.25rem;">
+                    <div class="stat-chip">
+                        <span class="stat-number">B.Tech 2nd Year</span>
+                        <span class="stat-label">Academic Level</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-number">CSE</span>
+                        <span class="stat-label">Department</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-number">18 Features</span>
+                        <span class="stat-label">Model Dimension</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-number">94.4%</span>
+                        <span class="stat-label">Evaluation Accuracy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main About Content -->
+    <main class="container main-content" style="margin-top: 2rem;">
+
+        <!-- Section 1: Objectives & Motivation -->
+        <section class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Project Background</span>
+                <h2 class="section-heading">Objectives &amp; Real-World Motivation</h2>
+                <p class="section-subtitle">Why urban traffic prediction is critical for sustainable city mobility.</p>
+            </div>
+
+            <div class="corridor-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🚦</div>
+                    <h3 style="color: #0f1d33; font-size: 1.15rem; margin-bottom: 0.5rem;">Proactive Commute Planning</h3>
+                    <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                        Rather than reacting to bumper-to-bumper delays after getting stuck, traffic classification enables commuters to anticipate bottlenecks based on departure time and corridor characteristics.
+                    </p>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">📊</div>
+                    <h3 style="color: #0f1d33; font-size: 1.15rem; margin-bottom: 0.5rem;">Machine Learning Grounding</h3>
+                    <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                        Demonstrates the real-world application of supervised classification, showing how nominal variables (roads, weekdays) combine with continuous measurements (volume, velocity) to produce actionable decisions.
+                    </p>
+                </div>
+
+                <div class="card" style="padding: 1.5rem;">
+                    <div style="font-size: 1.8rem; margin-bottom: 0.5rem;">🌱</div>
+                    <h3 style="color: #0f1d33; font-size: 1.15rem; margin-bottom: 0.5rem;">Emissions &amp; Idle Reduction</h3>
+                    <p style="color: #475569; font-size: 0.95rem; line-height: 1.5;">
+                        Vehicles crawling in low-gear congestion emit up to 80% more carbon monoxide per kilometer. Predictive routing aids in smoothing transit peaks and lowering fuel burn across urban clusters.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- Section 2: Technology Stack -->
+        <section class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Software Architecture</span>
+                <h2 class="section-heading">Technology Stack &amp; Libraries</h2>
+                <p class="section-subtitle">Carefully selected minimal dependencies that keep the codebase transparent, modular, and beginner-friendly.</p>
+            </div>
+
+            <div class="corridor-grid" style="grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));">
+                
+                <div class="card" style="padding: 1.25rem;">
+                    <span class="road-type-badge" style="margin-bottom: 0.5rem;">Backend Engine</span>
+                    <h4 style="color: #0f1d33; margin: 0.25rem 0;">Python 3.10+ &amp; Flask</h4>
+                    <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                        Flask serves the web interface and handles JSON prediction requests via lightweight REST endpoints without requiring heavyweight ORMs or database servers.
+                    </p>
+                </div>
+
+                <div class="card" style="padding: 1.25rem;">
+                    <span class="road-type-badge badge-junction" style="margin-bottom: 0.5rem;">Machine Learning</span>
+                    <h4 style="color: #0f1d33; margin: 0.25rem 0;">Scikit-learn</h4>
+                    <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                        Powers model training, feature normalization with <code>StandardScaler</code>, 80:20 data splitting, multinomial <code>LogisticRegression</code>, and evaluation matrices.
+                    </p>
+                </div>
+
+                <div class="card" style="padding: 1.25rem;">
+                    <span class="road-type-badge badge-market" style="margin-bottom: 0.5rem;">Data Manipulation</span>
+                    <h4 style="color: #0f1d33; margin: 0.25rem 0;">NumPy &amp; CSV Module</h4>
+                    <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                        All data operations are implemented directly using Python's built-in <code>csv</code> module and NumPy arrays — deliberately avoiding Pandas to master fundamental array math.
+                    </p>
+                </div>
+
+                <div class="card" style="padding: 1.25rem;">
+                    <span class="road-type-badge badge-college" style="margin-bottom: 0.5rem;">Visualization</span>
+                    <h4 style="color: #0f1d33; margin: 0.25rem 0;">Chart.js &amp; HTML5/CSS3</h4>
+                    <p style="color: #475569; font-size: 0.9rem; line-height: 1.5;">
+                        Responsive HTML5 layout with transportation-inspired styling (navy blue, lime green, off-white), CSS grid layouts, and interactive Chart.js bar charts.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- Section 3: Machine Learning Model Details -->
+        <section class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Algorithm &amp; Mathematical Formulation</span>
+                <h2 class="section-heading">How the Logistic Regression Classifier Works</h2>
+                <p class="section-subtitle">Understanding the classification logic, feature normalization, and decision boundaries.</p>
+            </div>
+
+            <div class="card" style="padding: 2rem; margin-bottom: 1.5rem;">
+                <h3 style="color: #0f1d33; font-size: 1.3rem; margin-bottom: 1rem;">1. Input Representation (18 Dimensions)</h3>
+                <p style="color: #475569; line-height: 1.6; margin-bottom: 1rem;">
+                    Machine learning models cannot directly process textual names like <em>"Airport Road"</em> or <em>"Monday"</em>. 
+                    We convert categorical values into binary indicator columns using <strong>One-Hot Encoding</strong>:
+                </p>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem; font-family: monospace; font-size: 0.85rem; color: #1e293b; overflow-x: auto; margin-bottom: 1rem;">
+                    [Airport_Rd, Phase7_Mkt, Phase3B2, Landran_Rd, Kharar_Hwy, IT_City, Kumbra, PCA_Stadium,<br>
+                    &nbsp;Mon, Tue, Wed, Thu, Fri, Sat, Sun,<br>
+                    &nbsp;Hour_of_Day, Vehicle_Count, Avg_Speed_kmh] &rarr; Shape: (1, 18)
+                </div>
+
+                <h3 style="color: #0f1d33; font-size: 1.3rem; margin-top: 1.5rem; margin-bottom: 1rem;">2. Feature Standardization (StandardScaler)</h3>
+                <p style="color: #475569; line-height: 1.6; margin-bottom: 1rem;">
+                    Vehicle counts range from <strong>10 to 1,200</strong>, while speeds range from <strong>5 to 80 km/h</strong>. 
+                    If unscaled, the large magnitude of vehicle counts would overpower the speed and time features during gradient descent. 
+                    <code>StandardScaler</code> rescales each feature to have a mean of 0 and standard deviation of 1:
+                </p>
+                <div style="background: #f8fafc; border-left: 4px solid #84cc16; padding: 0.75rem 1rem; font-family: monospace; font-size: 0.95rem; color: #0f172a; margin-bottom: 1rem;">
+                    z = (x - &mu;) / &sigma;
+                </div>
+
+                <h3 style="color: #0f1d33; font-size: 1.3rem; margin-top: 1.5rem; margin-bottom: 1rem;">3. Multinomial Softmax Classification</h3>
+                <p style="color: #475569; line-height: 1.6;">
+                    For the 3 congestion categories ($k \in \{0, 1, 2\}$), the model calculates a linear score $z_k = \mathbf{w}_k^T \mathbf{x} + b_k$ 
+                    and transforms it into calibrated probabilities using the <strong>Softmax function</strong>:
+                </p>
+                <div style="background: #f8fafc; border-left: 4px solid #0284c7; padding: 0.75rem 1rem; font-family: monospace; font-size: 0.95rem; color: #0f172a; margin-top: 0.5rem;">
+                    P(y = k | x) = exp(z_k) / &Sigma; exp(z_j)
+                </div>
+                <p style="color: #475569; font-size: 0.9rem; margin-top: 0.75rem;">
+                    The predicted category is the one with the maximum probability ($\text{argmax}_k P(y=k|\mathbf{x})$).
+                </p>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- Section 4: Monitored Mohali Corridors -->
+        <section class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Geographic Context</span>
+                <h2 class="section-heading">Monitored Mohali Transit Corridors</h2>
+                <p class="section-subtitle">Real road segments around SAS Nagar, Punjab modeled in the dataset.</p>
+            </div>
+
+            <div class="card" style="padding: 1.5rem; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #e2e8f0; color: #0f1d33;">
+                            <th style="padding: 0.75rem 1rem;">#</th>
+                            <th style="padding: 0.75rem 1rem;">Corridor Name</th>
+                            <th style="padding: 0.75rem 1rem;">Corridor Type</th>
+                            <th style="padding: 0.75rem 1rem;">Speed Limit</th>
+                            <th style="padding: 0.75rem 1rem;">Key Bottlenecks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">1</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">Airport Road (PR-7)</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge">Expressway</span></td>
+                            <td style="padding: 0.75rem 1rem;">80 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Zirakpur junction merge</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">2</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">Phase 7 Market Road</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge badge-market">Commercial</span></td>
+                            <td style="padding: 0.75rem 1rem;">40 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Curb parking, pedestrian crossings</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">3</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">Phase 3B2 Light Point</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge badge-junction">4-Way Junction</span></td>
+                            <td style="padding: 0.75rem 1rem;">50 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Signal phase queues, left turns</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">4</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">Landran Road</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge badge-college">College Arterial</span></td>
+                            <td style="padding: 0.75rem 1rem;">55 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Campus bus peaks, heavy trucks</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">5</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">Kharar-Mohali Highway</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge">Highway Flyover</span></td>
+                            <td style="padding: 0.75rem 1rem;">75 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Flyover descent bottlenecks</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">6</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">IT City Expressway</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge">Tech Park Arterial</span></td>
+                            <td style="padding: 0.75rem 1rem;">70 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Morning &amp; evening shift surges</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #f1f5f9;">
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">7</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">Kumbra Chowk</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge badge-junction">Rotary Roundabout</span></td>
+                            <td style="padding: 0.75rem 1rem;">45 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Multi-lane weaving slowdowns</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 0.75rem 1rem; font-weight: bold;">8</td>
+                            <td style="padding: 0.75rem 1rem; font-weight: 600; color: #0f172a;">PCA Stadium Road</td>
+                            <td style="padding: 0.75rem 1rem;"><span class="road-type-badge badge-college">Institutional</span></td>
+                            <td style="padding: 0.75rem 1rem;">50 km/h</td>
+                            <td style="padding: 0.75rem 1rem; color: #475569;">Match &amp; sports event traffic</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- Section 5: Limitations & Academic Disclaimer -->
+        <section class="app-section">
+            <div class="card" style="padding: 2rem; border-left: 4px solid #f59e0b; background: #fffdf5;">
+                <h3 style="color: #92400e; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>⚠️</span> Academic Prototype &amp; Limitations Notice
+                </h3>
+                <p style="color: #78350f; font-size: 0.95rem; line-height: 1.6; margin-bottom: 0.75rem;">
+                    <strong>Simulated Dataset Notice:</strong> TrafficPulse is developed strictly as a 2nd-year B.Tech academic mini-project. 
+                    The underlying dataset (<code>traffic_data.csv</code>) contains simulated transit records based on mathematical models 
+                    and capacity guidelines. It does not pull live sensor telemetry or municipal traffic camera feeds.
+                </p>
+                <p style="color: #78350f; font-size: 0.95rem; line-height: 1.6;">
+                    <strong>Evaluation Integrity:</strong> High test set accuracy (~94.4%) reflects the model's ability to learn 
+                    patterns within the synthetic distribution; it should not be represented as verified field performance on actual live traffic.
+                </p>
+            </div>
+
+            <!-- Call to action -->
+            <div style="text-align: center; margin: 3rem 0 1rem;">
+                <a href="{{ url_for('home') }}#predict" class="btn btn-hero" style="font-size: 1rem; padding: 0.85rem 2rem;">
+                    &larr; Return to Prediction Dashboard
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <span class="footer-title">TrafficPulse</span>
+                <span class="footer-motto">Understand the traffic. Plan your journey.</span>
+                <span class="footer-dept">Department of Computer Science &amp; Engineering</span>
+            </div>
+            
+            <div class="footer-notes">
+                <p class="footer-academic">
+                    <strong>B.Tech 2nd-Year Computer Science &amp; Engineering Mini-Project</strong>
+                </p>
+                <p class="footer-disclaimer">
+                    <strong>Academic Disclaimer:</strong> This web application is an educational prototype. 
+                    Predictions and chart metrics are generated from a prepared simulated dataset following 
+                    traffic engineering principles and do not constitute real-time municipal traffic telemetry.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

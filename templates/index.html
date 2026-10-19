@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficPulse — Smart Traffic Congestion Prediction System</title>
+    <meta name="description" content="TrafficPulse: A collegiate Machine Learning mini-project predicting urban road congestion using Logistic Regression and Flask.">
+    
+    <!-- Redesigned Stylesheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <!-- Chart.js CDN for traffic data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- 1. Header & Navigation -->
+    <header class="site-header">
+        <div class="container header-container">
+            <div class="brand-group">
+                <a href="#hero" class="brand-logo" aria-label="TrafficPulse Home">
+                    <span class="brand-icon" aria-hidden="true">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect x="2" y="3" width="20" height="18" rx="3" fill="#0f1d33" />
+                            <line x1="12" y1="5" x2="12" y2="9" stroke="#84cc16" stroke-width="2" stroke-linecap="round" />
+                            <line x1="12" y1="12" x2="12" y2="15" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 1" />
+                            <line x1="12" y1="18" x2="12" y2="19" stroke="#84cc16" stroke-width="2" stroke-linecap="round" />
+                            <circle cx="6" cy="12" r="1.5" fill="#ffffff" opacity="0.6" />
+                            <circle cx="18" cy="12" r="1.5" fill="#ffffff" opacity="0.6" />
+                        </svg>
+                    </span>
+                    <span class="brand-name">Traffic<span class="brand-accent">Pulse</span></span>
+                </a>
+                <span class="brand-badge">B.Tech Mini-Project</span>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="main-nav" aria-label="Primary Navigation">
+                <ul class="nav-list">
+                    <li><a href="#hero" class="nav-link active">Home</a></li>
+                    <li><a href="#corridors" class="nav-link">Corridors</a></li>
+                    <li><a href="#predict" class="nav-link">Predict</a></li>
+                    <li><a href="#guidelines" class="nav-link">Levels</a></li>
+                    <li><a href="#analysis" class="nav-link">Analysis</a></li>
+                    <li><a href="#pipeline" class="nav-link">Architecture</a></li>
+                    <li><a href="{{ url_for('about') }}" class="nav-link">About</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 2. Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <div class="hero-tagline-badge">
+                    <span class="pulse-dot"></span>
+                    <span>Understand the traffic. Plan your journey.</span>
+                </div>
+                <h1 class="hero-title">Predict Urban Congestion with Machine Learning</h1>
+                <p class="hero-description">
+                    <strong>TrafficPulse</strong> is a practical B.Tech 2nd-year CSE mini-project. It applies 
+                    multinomial <strong>Logistic Regression</strong> to classify traffic states into 
+                    <strong>Low</strong>, <strong>Moderate</strong>, and <strong>High</strong> congestion 
+                    across key road corridors in Mohali using road capacity, timing, vehicle volume, and speed.
+                </p>
+
+                <!-- Project Stats Chips -->
+                <div class="hero-stats-row">
+                    <div class="stat-chip">
+                        <span class="stat-number">94.4%</span>
+                        <span class="stat-label">Test Accuracy</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-number">800</span>
+                        <span class="stat-label">Balanced Records</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-number">8</span>
+                        <span class="stat-label">Mohali Corridors</span>
+                    </div>
+                    <div class="stat-chip">
+                        <span class="stat-number">3</span>
+                        <span class="stat-label">Traffic Categories</span>
+                    </div>
+                </div>
+
+                <div class="hero-actions">
+                    <a href="#predict" class="btn btn-hero">Predict Congestion &darr;</a>
+                    <a href="#corridors" class="btn btn-hero-secondary">Explore Corridor Presets</a>
+                </div>
+            </div>
+
+            <!-- Tasteful Road & Traffic Visual Element -->
+            <div class="hero-visual" aria-hidden="true">
+                <div class="road-visual-card">
+                    <div class="road-visual-header">
+                        <span class="corridor-tag">Corridor Telemetry Monitor</span>
+                        <span class="corridor-status">Active Model v1.0</span>
+                    </div>
+                    <div class="road-graphic">
+                        <svg viewBox="0 0 320 180" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Road Surface -->
+                            <rect x="20" y="15" width="280" height="150" rx="8" fill="#132238" />
+                            <!-- Lane Dividers (Dashed road markings) -->
+                            <line x1="20" y1="65" x2="300" y2="65" stroke="#475569" stroke-width="1.5" stroke-dasharray="8 6" />
+                            <line x1="20" y1="115" x2="300" y2="115" stroke="#475569" stroke-width="1.5" stroke-dasharray="8 6" />
+                            
+                            <!-- Road Shoulder Lines -->
+                            <line x1="20" y1="25" x2="300" y2="25" stroke="#64748b" stroke-width="2" />
+                            <line x1="20" y1="155" x2="300" y2="155" stroke="#64748b" stroke-width="2" />
+
+                            <!-- Simulated Traffic Pulse Nodes -->
+                            <!-- Lane 1: Low density / fast node -->
+                            <rect x="70" y="38" width="28" height="14" rx="3" fill="#84cc16" />
+                            <text x="110" y="49" fill="#94a3b8" font-size="9" font-family="sans-serif">Airport Rd &bull; 68 km/h</text>
+                            
+                            <!-- Lane 2: Moderate density node -->
+                            <rect x="150" y="88" width="28" height="14" rx="3" fill="#f59e0b" />
+                            <text x="190" y="99" fill="#94a3b8" font-size="9" font-family="sans-serif">Landran Rd &bull; 34 km/h</text>
+
+                            <!-- Lane 3: High density node -->
+                            <rect x="40" y="130" width="28" height="14" rx="3" fill="#ef4444" />
+                            <text x="80" y="141" fill="#94a3b8" font-size="9" font-family="sans-serif">Phase 7 Mkt &bull; 14 km/h</text>
+                        </svg>
+                    </div>
+                    <div class="road-visual-footer">
+                        <span class="indicator-pill ind-low">Low: &gt;45 km/h</span>
+                        <span class="indicator-pill ind-mod">Mod: 25-45 km/h</span>
+                        <span class="indicator-pill ind-high">High: &lt;25 km/h</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application Container -->
+    <main class="container main-content">
+
+        <!-- 3. NEW SECTION: Mohali Corridor Profiles & Presets -->
+        <section id="corridors" class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Corridor Directory</span>
+                <h2 class="section-heading">Mohali Road Corridors &amp; Scenarios</h2>
+                <p class="section-subtitle">
+                    The model is trained on 8 characteristic transit routes in Mohali. Click <strong>"Load Scenario"</strong> 
+                    on any corridor card to auto-fill the form and test predictions immediately.
+                </p>
+            </div>
+
+            <div class="corridor-grid">
+                <!-- Corridor 1: Airport Road -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge">Expressway Corridor</span>
+                        <span class="speed-limit">Limit: 80 km/h</span>
+                    </div>
+                    <h4>Airport Road (PR-7)</h4>
+                    <p class="corridor-desc">Wide, multi-lane divided arterial connecting Zirakpur to Chandigarh International Airport with high free-flow capacity.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 1200 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 8–10 AM, 6–8 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="Airport Road" data-day="Sunday" data-hour="3" data-vehicles="60" data-speed="72.0">
+                        Load Scenario: Late Night Free Flow &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 2: Phase 7 Market Road -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge badge-market">Commercial Street</span>
+                        <span class="speed-limit">Limit: 40 km/h</span>
+                    </div>
+                    <h4>Phase 7 Market Road</h4>
+                    <p class="corridor-desc">High-density commercial market strip with heavy pedestrian crossing, curb parking, and reduced travel speeds.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 500 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 6–9 PM (Daily)</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="Phase 7 Market Road" data-day="Friday" data-hour="19" data-vehicles="480" data-speed="11.5">
+                        Load Scenario: Evening Market Rush &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 3: Phase 3B2 Light Point -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge badge-junction">Major Junction</span>
+                        <span class="speed-limit">Limit: 50 km/h</span>
+                    </div>
+                    <h4>Phase 3B2 Light Point</h4>
+                    <p class="corridor-desc">Crucial 4-way signalized intersection connecting residential sectors, commercial eateries, and SAS Nagar inner loops.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 700 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 9–11 AM, 5–8 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="Phase 3B2 Light Point" data-day="Monday" data-hour="9" data-vehicles="620" data-speed="18.0">
+                        Load Scenario: Morning Intersection Queue &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 4: Landran Road -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge badge-college">Commuter / College Arterial</span>
+                        <span class="speed-limit">Limit: 55 km/h</span>
+                    </div>
+                    <h4>Landran Road (Sector 70–Landran)</h4>
+                    <p class="corridor-desc">Busy commuter arterial serving college campuses (CGC Landran), buses, and commercial inter-district traffic.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 650 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 8–10 AM, 4–6 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="Landran Road" data-day="Wednesday" data-hour="14" data-vehicles="380" data-speed="36.0">
+                        Load Scenario: Midday Student Flow &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 5: Kharar-Mohali Highway -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge">Highway Flyover Corridors</span>
+                        <span class="speed-limit">Limit: 75 km/h</span>
+                    </div>
+                    <h4>Kharar-Mohali Highway</h4>
+                    <p class="corridor-desc">National highway flyover link accommodating long-distance transport, inter-city passenger traffic, and heavy commuters.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 1100 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 8–11 AM, 5–8 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="Kharar-Mohali Highway" data-day="Tuesday" data-hour="17" data-vehicles="950" data-speed="22.5">
+                        Load Scenario: Peak Highway Bottleneck &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 6: IT City Expressway -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge">Technology Corridor</span>
+                        <span class="speed-limit">Limit: 70 km/h</span>
+                    </div>
+                    <h4>IT City Expressway (Sec 82/83)</h4>
+                    <p class="corridor-desc">High-capacity arterial serving Mohali's Silicon plateau, international tech parks, and Aerocity airport loops.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 1000 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 8:30–10:30 AM, 5:30–7:30 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="IT City Expressway" data-day="Tuesday" data-hour="9" data-vehicles="750" data-speed="28.0">
+                        Load Scenario: IT Tech Shift Commute &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 7: Kumbra Chowk -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge badge-junction">Major Rotary</span>
+                        <span class="speed-limit">Limit: 45 km/h</span>
+                    </div>
+                    <h4>Kumbra Chowk (Sector 61/70)</h4>
+                    <p class="corridor-desc">High-load central roundabout connecting Phase 7, Sector 70, and Sohana Gurdwara with multi-directional weaving traffic.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 600 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 8:30–10:30 AM, 5–8 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="Kumbra Chowk" data-day="Thursday" data-hour="18" data-vehicles="540" data-speed="14.5">
+                        Load Scenario: Rotary Bottleneck Queue &rarr;
+                    </button>
+                </div>
+
+                <!-- Corridor 8: PCA Stadium Road -->
+                <div class="card corridor-card">
+                    <div class="corridor-card-header">
+                        <span class="road-type-badge badge-college">Institutional / Sports</span>
+                        <span class="speed-limit">Limit: 50 km/h</span>
+                    </div>
+                    <h4>PCA Stadium Road (Phase 9/10)</h4>
+                    <p class="corridor-desc">Connecting key residential sectors to the landmark Punjab Cricket Association International Stadium and Fortis Hospital.</p>
+                    <div class="corridor-meta">
+                        <span><strong>Design Capacity:</strong> 750 veh/hr</span>
+                        <span><strong>Peak Windows:</strong> 10 AM–1 PM, 4–7 PM</span>
+                    </div>
+                    <button type="button" class="btn btn-preset" data-road="PCA Stadium Road" data-day="Saturday" data-hour="17" data-vehicles="680" data-speed="19.0">
+                        Load Scenario: Stadium Event Congestion &rarr;
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- 4. Traffic Prediction Form & Result Section -->
+        <section id="predict" class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Prediction Tool</span>
+                <h2 class="section-heading">Predict Traffic Congestion</h2>
+                <p class="section-subtitle">
+                    Enter the operational parameters below or click one of the quick scenario chips to classify congestion with the trained model.
+                </p>
+            </div>
+
+            <!-- Quick Demo Chips -->
+            <div class="preset-chips-bar">
+                <span class="chips-label">Quick Scenario Presets:</span>
+                <button type="button" class="chip-btn" data-road="Airport Road" data-day="Sunday" data-hour="3" data-vehicles="50" data-speed="72.0">
+                    🟢 Low Traffic (Airport Rd, Sun 3 AM)
+                </button>
+                <button type="button" class="chip-btn" data-road="Landran Road" data-day="Wednesday" data-hour="14" data-vehicles="380" data-speed="36.0">
+                    🟠 Moderate Traffic (Landran Rd, Wed 2 PM)
+                </button>
+                <button type="button" class="chip-btn" data-road="Phase 7 Market Road" data-day="Friday" data-hour="19" data-vehicles="480" data-speed="11.5">
+                    🔴 High Jam (Phase 7 Mkt, Fri 7 PM)
+                </button>
+                <button type="button" class="chip-btn" data-road="IT City Expressway" data-day="Tuesday" data-hour="9" data-vehicles="750" data-speed="28.0">
+                    💻 Tech Commute (IT City, Tue 9 AM)
+                </button>
+                <button type="button" class="chip-btn" data-road="Kumbra Chowk" data-day="Thursday" data-hour="18" data-vehicles="540" data-speed="14.5">
+                    🔄 Rotary Jam (Kumbra, Thu 6 PM)
+                </button>
+            </div>
+
+            <div class="prediction-layout">
+                <!-- Form Card -->
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h3>Input Parameters</h3>
+                        <span class="badge-subtle">Scikit-learn Model Input</span>
+                    </div>
+
+                    <form id="predictionForm" novalidate>
+                        <div class="form-grid">
+
+                            <!-- Field 1: Road Name -->
+                            <div class="form-group span-2">
+                                <label for="road_name">
+                                    Road Corridor (Mohali)
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-wrap">
+                                    <select id="road_name" name="road_name" required>
+                                        <option value="" disabled selected>-- Select a Mohali Corridor --</option>
+                                        {% for road in roads %}
+                                            <option value="{{ road }}">{{ road }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <span class="field-hint">Sampled major transit corridors in Mohali, Punjab.</span>
+                            </div>
+
+                            <!-- Field 2: Day of the Week -->
+                            <div class="form-group">
+                                <label for="day_of_week">
+                                    Day of the Week
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-wrap">
+                                    <select id="day_of_week" name="day_of_week" required>
+                                        <option value="" disabled selected>-- Select Day --</option>
+                                        {% for day in days %}
+                                            <option value="{{ day }}">{{ day }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <span class="field-hint">Accounts for weekday vs. weekend patterns.</span>
+                            </div>
+
+                            <!-- Field 3: Hour of the Day -->
+                            <div class="form-group">
+                                <label for="hour_of_day">
+                                    Hour of Day (0–23)
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-wrap">
+                                    <input type="number" id="hour_of_day" name="hour_of_day" min="0" max="23" placeholder="e.g. 9 for 9 AM, 18 for 6 PM" required>
+                                </div>
+                                <span class="field-hint">24-hour format: 0 to 23.</span>
+                            </div>
+
+                            <!-- Field 4: Number of Vehicles -->
+                            <div class="form-group">
+                                <label for="vehicle_count">
+                                    Vehicle Count
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-wrap">
+                                    <input type="number" id="vehicle_count" name="vehicle_count" min="1" max="4000" placeholder="e.g. 450" required>
+                                </div>
+                                <span class="field-hint">Total vehicles observed along road section.</span>
+                            </div>
+
+                            <!-- Field 5: Average Vehicle Speed -->
+                            <div class="form-group">
+                                <label for="avg_speed_kmh">
+                                    Average Speed (km/h)
+                                    <span class="required-star">*</span>
+                                </label>
+                                <div class="input-wrap">
+                                    <input type="number" id="avg_speed_kmh" name="avg_speed_kmh" min="1" max="150" step="0.1" placeholder="e.g. 36.5" required>
+                                </div>
+                                <span class="field-hint">Expected or observed mean speed in km/h.</span>
+                            </div>
+
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="submit" id="predictBtn" class="btn btn-primary">
+                                <span class="btn-text">Predict Congestion</span>
+                            </button>
+                            <button type="reset" id="resetBtn" class="btn btn-secondary">Clear</button>
+                        </div>
+
+                        <!-- Validation Error Alert Box -->
+                        <div id="errorMessage" class="error-box" style="display: none;" role="alert"></div>
+                    </form>
+                </div>
+
+                <!-- Prediction Result Panel -->
+                <div class="card result-card">
+                    <div class="card-header">
+                        <h3>Model Prediction</h3>
+                        <span class="badge-subtle">Classification Output</span>
+                    </div>
+
+                    <!-- Placeholder state when user has not predicted yet -->
+                    <div id="placeholderResult" class="result-placeholder">
+                        <div class="placeholder-icon" aria-hidden="true">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="9" />
+                                <polyline points="12 6 12 12 14 14" />
+                            </svg>
+                        </div>
+                        <p class="placeholder-title">Awaiting Input Parameters</p>
+                        <p class="placeholder-text">
+                            Fill in the parameters or pick a preset, then click <strong>"Predict Congestion"</strong> to run the Scikit-learn Logistic Regression model.
+                        </p>
+                    </div>
+
+                    <!-- Active Result State -->
+                    <div id="predictionResult" class="result-display" style="display: none;">
+                        <div class="result-status-bar">
+                            <span id="resultBadge" class="result-badge">--</span>
+                            <span class="result-timestamp">Real-time Inference</span>
+                        </div>
+                        
+                        <h4 id="resultHeading" class="result-heading">--</h4>
+                        <p id="resultAdvisory" class="result-advisory">--</p>
+
+                        <!-- Softmax Probabilities Breakdown -->
+                        <div class="probabilities-panel">
+                            <div class="panel-header">
+                                <span class="panel-title">Model Confidence (Softmax Probabilities)</span>
+                            </div>
+                            <div class="prob-list">
+                                <div class="prob-item">
+                                    <div class="prob-meta">
+                                        <span class="prob-tag ind-low">Low Congestion (Class 0)</span>
+                                        <span id="probLow" class="prob-number">0%</span>
+                                    </div>
+                                    <div class="prob-track">
+                                        <div id="probBarLow" class="prob-fill fill-low" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div class="prob-item">
+                                    <div class="prob-meta">
+                                        <span class="prob-tag ind-mod">Moderate Congestion (Class 1)</span>
+                                        <span id="probModerate" class="prob-number">0%</span>
+                                    </div>
+                                    <div class="prob-track">
+                                        <div id="probBarModerate" class="prob-fill fill-mod" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                                <div class="prob-item">
+                                    <div class="prob-meta">
+                                        <span class="prob-tag ind-high">High Congestion (Class 2)</span>
+                                        <span id="probHigh" class="prob-number">0%</span>
+                                    </div>
+                                    <div class="prob-track">
+                                        <div id="probBarHigh" class="prob-fill fill-high" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- 5. NEW SECTION: Congestion Levels Reference Matrix -->
+        <section id="guidelines" class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Classification Matrix</span>
+                <h2 class="section-heading">Congestion Levels &amp; Operational Thresholds</h2>
+                <p class="section-subtitle">
+                    How TrafficPulse defines and differentiates traffic states using vehicle density and free-flow velocity ratios.
+                </p>
+            </div>
+
+            <div class="levels-grid">
+                <!-- Level 0 -->
+                <div class="card level-card level-card-low">
+                    <div class="level-header">
+                        <span class="level-pill pill-low">Class 0</span>
+                        <span class="level-status">Free-Flowing</span>
+                    </div>
+                    <h3>Low Congestion</h3>
+                    <p class="level-summary">Traffic moves at or near posted speed limits with minimal queueing.</p>
+                    <ul class="level-traits">
+                        <li><strong>Observed Speed:</strong> &gt; 70% of road design speed</li>
+                        <li><strong>Vehicle Volume:</strong> Light (&lt; 30% corridor capacity)</li>
+                        <li><strong>Commute Impact:</strong> Negligible delay; optimal travel window</li>
+                    </ul>
+                </div>
+
+                <!-- Level 1 -->
+                <div class="card level-card level-card-mod">
+                    <div class="level-header">
+                        <span class="level-pill pill-mod">Class 1</span>
+                        <span class="level-status">Medium Density</span>
+                    </div>
+                    <h3>Moderate Congestion</h3>
+                    <p class="level-summary">Stable flow with minor braking near intersections and commercial access points.</p>
+                    <ul class="level-traits">
+                        <li><strong>Observed Speed:</strong> 40% – 70% of road design speed</li>
+                        <li><strong>Vehicle Volume:</strong> Moderate (30% – 70% capacity)</li>
+                        <li><strong>Commute Impact:</strong> 2 to 6 minute signal wait; safe spacing advised</li>
+                    </ul>
+                </div>
+
+                <!-- Level 2 -->
+                <div class="card level-card level-card-high">
+                    <div class="level-header">
+                        <span class="level-pill pill-high">Class 2</span>
+                        <span class="level-status">Heavy / Bottleneck</span>
+                    </div>
+                    <h3>High Congestion</h3>
+                    <p class="level-summary">Stop-and-go conditions, junction spillover, and severe speed degradation.</p>
+                    <ul class="level-traits">
+                        <li><strong>Observed Speed:</strong> &lt; 40% of road design speed</li>
+                        <li><strong>Vehicle Volume:</strong> Saturated (&gt; 70% capacity)</li>
+                        <li><strong>Commute Impact:</strong> Significant delays; alternate routes recommended</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- 6. Traffic Analysis (Chart.js) Section with Toggle -->
+        <section id="analysis" class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Empirical Insight</span>
+                <h2 class="section-heading">Dataset Traffic Analysis</h2>
+                <p class="section-subtitle">
+                    Statistical aggregates loaded live from <code>traffic_data.csv</code> (600 simulated observations).
+                </p>
+            </div>
+
+            <div class="card chart-card">
+                <div class="chart-header">
+                    <div>
+                        <h3 id="chartTitle">Average Vehicle Volume by Congestion Category</h3>
+                        <p class="chart-subtitle">Computed using Python's standard library and NumPy array slicing.</p>
+                    </div>
+                    <!-- Metric Toggle Buttons -->
+                    <div class="chart-toggles">
+                        <button type="button" id="btnToggleVehicles" class="btn-toggle active">Vehicles (veh/hr)</button>
+                        <button type="button" id="btnToggleSpeed" class="btn-toggle">Speed (km/h)</button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="trafficBarChart"></canvas>
+                </div>
+
+                <!-- Aggregate Metric Summary Cards -->
+                <div class="chart-metrics-row">
+                    <div class="metric-card">
+                        <span class="metric-category ind-low">Low Congestion</span>
+                        <div class="metric-values">
+                            <span><strong>170.8</strong> veh/hr</span>
+                            <span><strong>49.6</strong> km/h avg</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-category ind-mod">Moderate Congestion</span>
+                        <div class="metric-values">
+                            <span><strong>375.1</strong> veh/hr</span>
+                            <span><strong>38.2</strong> km/h avg</span>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-category ind-high">High Congestion</span>
+                        <div class="metric-values">
+                            <span><strong>694.7</strong> veh/hr</span>
+                            <span><strong>22.8</strong> km/h avg</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chart-meta-footer">
+                    <span><strong>Source:</strong> <code>traffic_data.csv</code></span>
+                    <span><strong>Sample Size:</strong> 800 records (8 Mohali corridors)</span>
+                    <span><strong>Distribution:</strong> 280 Low, 264 Moderate, 256 High</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Road-inspired separator -->
+        <div class="road-divider" aria-hidden="true"><span class="divider-lane"></span></div>
+
+        <!-- 7. NEW SECTION: Machine Learning Architecture & Pipeline Flow -->
+        <section id="pipeline" class="app-section">
+            <div class="section-title-wrap">
+                <span class="section-category">Model Architecture</span>
+                <h2 class="section-heading">Machine Learning Pipeline Flow</h2>
+                <p class="section-subtitle">
+                    How user inputs transform into normalized vectors and probability predictions through Scikit-learn.
+                </p>
+            </div>
+
+            <div class="pipeline-grid">
+                <div class="card pipeline-card">
+                    <div class="step-badge">Step 1</div>
+                    <h4>Feature Ingestion</h4>
+                    <p>Captures 5 parameters: Road Corridor, Day of Week, Hour (0–23), Vehicle Count, and Average Speed.</p>
+                    <span class="code-pill">Raw Dict / JSON</span>
+                </div>
+
+                <div class="card pipeline-card">
+                    <div class="step-badge">Step 2</div>
+                    <h4>One-Hot Encoding</h4>
+                    <p>Converts nominal roads (5) and days (7) into binary indicators; combines with 3 numerical values.</p>
+                    <span class="code-pill">15-D NumPy Vector</span>
+                </div>
+
+                <div class="card pipeline-card">
+                    <div class="step-badge">Step 3</div>
+                    <h4>StandardScaler</h4>
+                    <p>Normalizes features via <code>z = (x - &mu;) / &sigma;</code> so large counts don't dominate speed.</p>
+                    <span class="code-pill">Zero Mean, Unit Var</span>
+                </div>
+
+                <div class="card pipeline-card">
+                    <div class="step-badge">Step 4</div>
+                    <h4>Softmax Decision</h4>
+                    <p>Logistic Regression evaluates class scores and computes 3 calibrated class probabilities summing to 1.0.</p>
+                    <span class="code-pill">Argmax Class (0, 1, 2)</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 10. Footer Section -->
+    <footer class="site-footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <span class="footer-title">TrafficPulse</span>
+                <span class="footer-motto">Understand the traffic. Plan your journey.</span>
+                <span class="footer-dept">Department of Computer Science &amp; Engineering</span>
+            </div>
+            
+            <div class="footer-notes">
+                <p class="footer-academic">
+                    <strong>B.Tech 2nd-Year Computer Science &amp; Engineering Mini-Project</strong>
+                </p>
+                <p class="footer-disclaimer">
+                    <strong>Academic Disclaimer:</strong> This web application is an educational prototype. 
+                    Predictions and chart metrics are generated from a prepared simulated dataset following 
+                    traffic engineering principles and do not constitute real-time municipal traffic telemetry.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Frontend logic script -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
